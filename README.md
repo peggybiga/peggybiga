@@ -1,7 +1,6 @@
 - 👋 Hi, I’m @peggybiga
 - 👀 I’m interested in epigenetics and genomics in non-model organisms
 - 🌱 I’m currently learning how to use GitHub
-- 💞️ I’m looking to collaborate on my FOSS epigenetics team capsstone project
 - 📫 How to reach me at pegbiga[at]uab.edu
 
 <!---
