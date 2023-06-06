@@ -1,0 +1,66 @@
+# make sure correct packages are installed andloaded
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("nlme")
+library("ggpubr")
+
+# make sure working directory is correct
+getwd()
+
+# if need, set correct working directory with <setwd(path)>
+setwd("/Users/pegbiga/Desktop/bigaR")
+
+# name, read, and show structure of data file
+data2 <- read.csv("ZFResData2.csv")
+str(data2)
+
+# make sure "fish", "sex", "age", and "time" are set as factor 
+# (and not integer or character) 
+# so that it's not treated as a continuous variable
+data2$fish <- as.factor(data2$fish)
+data2$age <- as.factor(data2$age)
+data2$sex <- as.factor(data2$sex)
+data2$time <- as.factor(data2$time)
+
+# boxplot showing "time" on x and "adjscore" on y, with age within time measures
+ggboxplot(data2, x = "time", y = "adjscore", color = "age", palette = c("#00AFBB", "#E7B800"))
+
+# interaction plot - age
+interaction.plot(x.factor = data2$time, trace.factor = data2$age, response = data2$adjscore, fun = mean, type = "b", legend = TRUE, xlab ="Time", ylab="AFU/g", pch=c(1,19), col = c("#00AFBB", "#E7B800"))
+
+# interaction plot - sex
+interaction.plot(x.factor = data2$time, trace.factor = data2$sex, response = data2$adjscore, fun = mean, type = "b", legend = TRUE, xlab ="Time", ylab="AFU/g", pch=c(1,19), col = c("#00AFBB", "#E7B800"))
+
+# One way between
+# Independent Variable (within): time
+# Dependent Variable: score
+aov_time2 <- aov(adjscore ~ time + Error(fish/time), data = data2)
+# display summary 
+summary(aov_time2)
+
+# 2x2 mixed:
+# IV between: age
+# IV within: time
+# DV: score
+aov_age_time2 <- aov(adjscore ~ age*time + Error(fish/time), data = data2)
+summary(aov_age_time2)
+
+# 2x2 mixed:
+# IV between: sex
+# IV within: time
+# DV: score
+aov_sex_time2 <- aov(adjscore ~ sex*time + Error(fish/time), data = data2)
+summary(aov_sex_time2)                
+
+# 3 way ANOVA
+# IV btwn: sex
+# IV btwn: age
+# IV within: time
+# DV: score
+aov_sex_age_time2 <- aov(adjscore ~ sex*age*time + Error(fish/time), data = data2)
+summary(aov_sex_age_time2)
+
+# Plot all three variables split by sex
+ggplot(data2, aes(x = time, y = score, color = age)) +
+  +     geom_point() +
+  +     facet_wrap(~ sex)
